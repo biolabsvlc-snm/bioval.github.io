@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="BioVal Lab - BioHacking futurista, optimización humana y tecnología avanzada.">
+<title>BioVal Lab | Futuristic BioHacking</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;scroll-behavior:smooth}
+body{
+    font-family:'Rajdhani',sans-serif;
+    background:#02040a;
+    color:white;
+    overflow-x:hidden;
+}
+
+/* Animated background */
+body::before{
+    content:"";
+    position:fixed;
+    width:200%;
+    height:200%;
+    background:radial-gradient(circle at 20% 20%, #00f0ff22 0%, transparent 40%),
+               radial-gradient(circle at 80% 80%, #0066ff22 0%, transparent 40%);
+    animation:moveBg 15s linear infinite;
+    z-index:-1;
+}
+@keyframes moveBg{
+    0%{transform:translate(0,0)}
+    50%{transform:translate(-10%,-10%)}
+    100%{transform:translate(0,0)}
+}
+
+/* NAV */
+nav{
+    position:fixed;
+    width:100%;
+    top:0;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 60px;
+    background:rgba(0,0,0,0.7);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid #00f0ff55;
+    z-index:1000;
+}
+nav img{height:45px;filter:drop-shadow(0 0 10px #00f0ff)}
+nav ul{display:flex;gap:40px;list-style:none}
+nav ul li a{
+    text-decoration:none;
+    color:#00f0ff;
+    font-weight:600;
+    letter-spacing:2px;
+    transition:.3s;
+}
+nav ul li a:hover{
+    text-shadow:0 0 15px #00f0ff;
+}
+
+/* HERO */
+.hero{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background:linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,20,0.95)),
+    url('https://images.unsplash.com/photo-1535223289827-42f1e9919769') center/cover fixed;
+}
+.hero h1{
+    font-family:'Orbitron',sans-serif;
+    font-size:4rem;
+    color:#00f0ff;
+    text-shadow:0 0 20px #00f0ff,0 0 40px #0066ff;
+}
+.hero p{
+    margin-top:20px;
+    font-size:1.3rem;
+    letter-spacing:3px;
+    opacity:.8;
+}
+.btn{
+    margin-top:40px;
+    padding:15px 50px;
+    background:transparent;
+    border:2px solid #00f0ff;
+    color:#00f0ff;
+    font-weight:700;
+    letter-spacing:3px;
+    cursor:pointer;
+    transition:.4s;
+}
+.btn:hover{
+    background:#00f0ff;
+    color:#000;
+    box-shadow:0 0 25px #00f0ff;
+}
+
+/* Sections */
+section{
+    padding:120px 12%;
+    text-align:center;
+}
+section h2{
+    font-family:'Orbitron',sans-serif;
+    font-size:2.5rem;
+    margin-bottom:60px;
+    color:#00f0ff;
+    text-shadow:0 0 15px #00f0ff;
+}
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:40px;
+}
+.card{
+    padding:40px;
+    background:rgba(0,20,40,0.6);
+    border:1px solid #00f0ff33;
+    border-radius:15px;
+    transition:.4s;
+    backdrop-filter:blur(10px);
+}
+.card:hover{
+    transform:translateY(-15px) scale(1.03);
+    border:1px solid #00f0ff;
+    box-shadow:0 0 30px #00f0ff55;
+}
+.card h3{
+    margin-bottom:20px;
+    color:#00f0ff;
+}
+
+/* Parallax Divider */
+.parallax{
+    height:400px;
+    background:url('https://images.unsplash.com/photo-1559757175-0eb30cd8c063') center/cover fixed;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+.parallax h2{
+    font-size:3rem;
+    font-family:'Orbitron';
+    color:white;
+    text-shadow:0 0 25px #00f0ff;
+}
+
+footer{
+    padding:40px;
+    text-align:center;
+    border-top:1px solid #00f0ff33;
+    background:#000814;
+    font-size:.9rem;
+    letter-spacing:2px;
+}
+
+@media(max-width:768px){
+    .hero h1{font-size:2.5rem}
+    nav{padding:15px 20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+<img src="logo.png" alt="BioVal Lab Logo">
+<ul>
+<li><a href="#about">LAB</a></li>
+<li><a href="#services">PROTOCOLS</a></li>
+<li><a href="#contact">ACCESS</a></li>
+</ul>
+</nav>
+
+<div class="hero">
+<div>
+<h1>BIOHACK THE FUTURE</h1>
+<p>HUMAN UPGRADE · NEURAL POWER · LONGEVITY SCIENCE</p>
+<button class="btn">INICIAR PROTOCOLO</button>
+</div>
+</div>
+
+<section id="about">
+<h2>LABORATORIO DE OPTIMIZACIÓN HUMANA</h2>
+<p>Integramos biotecnología, análisis de biomarcadores y protocolos avanzados para llevar el rendimiento humano al siguiente nivel.</p>
+</section>
+
+<div class="parallax">
+<h2>EVOLVE BEYOND LIMITS</h2>
+</div>
+
+<section id="services">
+<h2>PROTOCOLOS AVANZADOS</h2>
+<div class="cards">
+<div class="card">
+<h3>NeuroEnhancement</h3>
+<p>Estimulación cognitiva y optimización neuronal.</p>
+</div>
+<div class="card">
+<h3>BioData Analytics</h3>
+<p>Monitoreo continuo, biometría avanzada e IA aplicada a salud.</p>
+</div>
+<div class="card">
+<h3>Longevity Engineering</h3>
+<p>Estrategias científicas para extender la salud y vitalidad.</p>
+</div>
+</div>
+</section>
+
+<section id="contact">
+<h2>ACCESS TERMINAL</h2>
+<p>biolabsvlc@gmail.com</p>
+</section>
+
+<footer>
+© 2026 BIOVAL LAB · FUTURE HUMAN PERFORMANCE
+</footer>
+
+</body>
+</html>
