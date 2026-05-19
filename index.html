@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>retr0sec | Own Your Data</title>
-    <link rel="icon" type="image/png" href="rs-logo-nbg.png"> 
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>BIOVAL LAB | EEG Biohacking</title>
     <style>
+        /* --- VARIABLES Y CONFIGURACIÓN --- */
         :root {
-            --primary: #ffffff;
-            --bg: #000000;
-            --dim: #555555;
+            --bg-color: #050505;
+            --cyber-blue: #00f0ff;
+            --cyber-blue-dim: rgba(0, 240, 255, 0.3);
+            --text-color: #e0e0e0;
+            --text-dim: #888888;
+            --font-main: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
 
         * {
@@ -19,226 +21,359 @@
             box-sizing: border-box;
         }
 
-        body {
-            background-color: var(--bg);
-            color: var(--primary);
-            font-family: 'Share Tech Mono', monospace;
+        body, html {
+            height: 100%;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
             overflow-x: hidden;
-            text-transform: uppercase;
+            scroll-behavior: smooth;
         }
 
-        /* --- BACKGROUND BINARY LOOP --- */
-        #binary-canvas {
+        /* --- CONTENEDOR PARALLAX --- */
+        .parallax-wrapper {
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            perspective: 10px;
+        }
+
+        /* --- NAVEGACIÓN --- */
+        nav {
             position: fixed;
             top: 0;
             left: 0;
-            z-index: -1;
-            opacity: 0.15;
-        }
-
-        /* --- SCANLINE & CRT EFFECT --- */
-        .crt-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
-                        repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0px, rgba(255, 255, 255, 0.05) 1px, transparent 1px, transparent 2px);
-            background-size: 100% 4px, 100% 2px;
-            z-index: 100;
-            pointer-events: none;
-        }
-
-        /* --- LAYOUT --- */
-        header {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .logo-container img {
-            width: 600px;
-            max-width: 80vw;
-            filter: grayscale(1) brightness(1.5);
-            margin-bottom: 5px;
-        }
-
-        h1 {
-            font-size: 3rem;
-            letter-spacing: 10px;
-            border-bottom: 4px solid var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .tagline {
-            font-size: 1.2rem;
-            letter-spacing: 5px;
-            color: var(--dim);
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 50px 20px;
-            border: 1px solid var(--primary);
-            background: rgba(0, 0, 0, 0.8);
-            margin-bottom: 100px;
-        }
-
-        .terminal-header {
-            background: var(--primary);
-            color: var(--bg);
-            padding: 5px 15px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
-
-        .protocol-list {
-            list-style: none;
-            margin-bottom: 30px;
-        }
-
-        .protocol-item {
-            border-left: 2px solid var(--primary);
-            padding-left: 15px;
-            margin-bottom: 20px;
-        }
-
-        .protocol-item h3 {
-            margin-bottom: 5px;
-        }
-
-        /* --- INTERACTIVE --- */
-        .btn-lockdown {
-            background: var(--primary);
-            color: var(--bg);
-            border: none;
-            padding: 15px 30px;
-            font-family: 'Share Tech Mono', monospace;
-            font-weight: bold;
-            cursor: pointer;
             width: 100%;
-            transition: 0.3s;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            background: linear-gradient(to bottom, rgba(5,5,5,0.8), rgba(5,5,5,0));
+            backdrop-filter: blur(5px);
+            border-bottom: 1px solid rgba(0, 240, 255, 0.1);
         }
 
-        .btn-lockdown:hover {
-            background: var(--bg);
-            color: var(--primary);
-            outline: 2px solid var(--primary);
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: #fff;
+            text-transform: uppercase;
         }
 
-        #console-log {
-            font-size: 0.8rem;
-            color: var(--dim);
-            margin-top: 20px;
-            height: 100px;
-            overflow-y: hidden;
+        .logo span {
+            color: var(--cyber-blue);
+            text-shadow: 0 0 10px var(--cyber-blue);
         }
 
-        footer {
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--cyber-blue);
+            text-shadow: 0 0 8px var(--cyber-blue);
+        }
+
+        /* --- SECCIONES ESTRUCTURA --- */
+        section {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 80px 10%;
+            transform-style: preserve-3d;
+            z-index: 2;
+            background-color: var(--bg-color);
+        }
+
+        /* --- EFECTO PARALLAX (HERO) --- */
+        #home {
+            background: transparent;
+        }
+
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            /* Reemplaza con tu imagen de fondo cyberpunk / ondas eeg */
+            background: radial-gradient(circle, rgba(0,240,255,0.07) 0%, rgba(5,5,5,1) 80%),
+                        linear-gradient(rgba(5, 5, 5, 0.5), rgba(5, 5, 5, 0.5));
+            background-size: cover;
+            background-position: center;
+            transform: translateZ(-10px) scale(2);
+            z-index: 1;
+        }
+
+        /* Rejilla Cyberpunk de fondo */
+        .cyber-grid {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(var(--cyber-blue-dim) 1px, transparent 1px),
+                              linear-gradient(90deg, var(--cyber-blue-dim) 1px, transparent 1px);
+            background-size: 50px 50px;
+            background-position: center;
+            opacity: 0.15;
+            transform: perspective(500px) rotateX(60deg) translateY(-100px);
+            transform-origin: top;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 100%; }
+        }
+
+        /* --- ELEMENTOS DE TEXTO INTERNOS --- */
+        .hero-content {
             text-align: center;
-            padding-bottom: 50px;
-            font-size: 0.7rem;
-            color: var(--dim);
+            z-index: 10;
+        }
+
+        .hero-content h1 {
+            font-size: 4.5rem;
+            font-weight: 900;
+            letter-spacing: 5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+
+        .hero-content h1 span {
+            color: var(--cyber-blue);
+            text-shadow: 0 0 20px var(--cyber-blue);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-dim);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        /* --- BOTONES --- */
+        .cyber-btn {
+            padding: 15px 35px;
+            border: 1px solid var(--cyber-blue);
+            background: transparent;
+            color: var(--cyber-blue);
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            overflow: hidden;
+        }
+
+        .cyber-btn:hover {
+            background: var(--cyber-blue);
+            color: #000;
+            box-shadow: 0 0 20px var(--cyber-blue);
+        }
+
+        /* --- SECCIÓN CONTENIDO (WEARABLES) --- */
+        .section-title {
+            font-size: 2.5rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 50px;
+            position: relative;
+            align-self: flex-start;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: var(--cyber-blue);
+            box-shadow: 0 0 10px var(--cyber-blue);
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            width: 100%;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 3px solid var(--cyber-blue);
+            padding: 40px;
+            transition: all 0.4s ease;
+        }
+
+        .card:hover {
+            background: rgba(0, 240, 255, 0.02);
+            border-color: var(--cyber-blue);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 240, 255, 0.05);
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            color: #fff;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card p {
+            color: var(--text-dim);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* --- SECCIÓN LABS (INTERACTIVIDAD) --- */
+        .lab-status {
+            width: 100%;
+            background: #0a0a0a;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            padding: 30px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .console-line {
+            margin-bottom: 10px;
+            color: var(--text-dim);
+        }
+
+        .console-line span.cyan {
+            color: var(--cyber-blue);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            nav { padding: 20px; }
+            .nav-links { display: none; } /* Simplificado para el ejemplo */
         }
     </style>
 </head>
 <body>
 
-    <div class="crt-overlay"></div>
-    <canvas id="binary-canvas"></canvas>
+    <nav>
+        <div class="logo">BIOVAL<span>LAB</span></div>
+        <ul class="nav-links">
+            <li><a href="#home" class="nav-link active">Inicio</a></li>
+            <li><a href="#eeg" class="nav-link">Wearables EEG</a></li>
+            <li><a href="#hacking" class="nav-link">Biohacking</a></li>
+        </ul>
+    </nav>
 
-    <header>
-        <div class="logo-container">
-            <img src="rs-logo-nbg.png" alt="retr0sec logo">
-        </div>
-       
-        <div class="tagline">OWN YOUR DATA</div>
-    </header>
-
-    <div class="container">
-        <div class="terminal-header">
-            SYSTEM_STATUS: ACTIVE // USER: GUEST_ROOT
-        </div>
-
-        <div class="protocol-list">
-            <div class="protocol-item">
-                <h3>[ INCIDENT RESPONSE ]</h3>
-                <p>Neutralizing data leaks and unauthorized entry in real-time.</p>
+    <div class="parallax-wrapper" id="scroll-container">
+        
+        <section id="home">
+            <div class="parallax-bg"></div>
+            <div class="cyber-grid"></div>
+            <div class="hero-content">
+                <h1>BIOVAL <span>LAB</span></h1>
+                <p>Interfaz Cerebro-Computador & Optimización Neural</p>
+                <button class="cyber-btn" onclick="document.getElementById('eeg').scrollIntoView();">Iniciar Sincronización</button>
             </div>
-            <div class="protocol-item">
-                <h3>[ DIGITAL FORENSICS ]</h3>
-                <p>Deep-layer recovery of encrypted or deleted security logs.</p>
-            </div>
-            <div class="protocol-item">
-                <h3>[ SYSTEM HARDENING ]</h3>
-                <p>Zero-trust architecture deployment for mission-critical nodes.</p>
-            </div>
-        </div>
+        </section>
 
-        <button class="btn-lockdown" onclick="initiateLockdown()">[ INITIATE LOCKDOWN PROTOCOL ]</button>
+        <section id="eeg">
+            <h2 class="section-title">Hardware EEG Wearable</h2>
+            <div class="grid-container">
+                <div class="card">
+                    <h3>01 / Diademas de Conducción</h3>
+                    <p>Dispositivos no invasivos de grado de consumo. Monitorean bandas de ondas Alfa y Beta en tiempo real para evaluar el enfoque y mitigar el estrés de manera activa.</p>
+                </div>
+                <div class="card">
+                    <h3>02 / Sensores de Canal Auditivo</h3>
+                    <p>El futuro del biohacking discreto. Wearables "In-Ear" que capturan señales electroencefalográficas sin alterar la estética diaria, ideales para el monitoreo cognitivo continuo.</p>
+                </div>
+                <div class="card">
+                    <h3>03 / Nodos de Alta Densidad</h3>
+                    <p>Sistemas avanzados de grado de investigación modificados para biohacking. Captura multicanal para mapeo de la corteza motora y experimentos avanzados de estimulación transcraneal.</p>
+                </div>
+            </div>
+        </section>
 
-        <div id="console-log">
-            > Initializing kernel...<br>
-            > Encrypted tunnel established...<br>
-            > Waiting for command...
-        </div>
+        <section id="hacking">
+            <h2 class="section-title">Consola de Diagnóstico</h2>
+            <div class="lab-status">
+                <div class="console-line">&gt; <span class="cyan">BIOVAL_OS v3.14</span> inicializado...</div>
+                <div class="console-line">&gt; Estado del núcleo: <span class="cyan" style="text-shadow: 0 0 5px var(--cyber-blue)">ONLINE</span></div>
+                <div class="console-line" id="eeg-stream">&gt; Esperando telemetría de ondas cerebrales...</div>
+                <div class="console-line" id="telemetry-data">&gt; Frecuencia actual: -- Hz</div>
+            </div>
+        </section>
+
     </div>
 
-    <footer>
-        TERMINAL TYPE: XTERM-256COLOR | &copy; 2024 RETR0SEC
-    </footer>
-
     <script>
-        // BINARY BACKGROUND LOGIC
-        const canvas = document.getElementById('binary-canvas');
-        const ctx = canvas.getContext('2d');
+        // 1. Simulación de flujo de datos EEG en la consola cyberpunk
+        const eegStreamText = document.getElementById('eeg-stream');
+        const telemetryData = document.getElementById('telemetry-data');
+        
+        const waveTypes = ['ALFA (Relajación/Enfoque)', 'BETA (Alerta/Ansiedad)', 'THETA (Meditación)', 'GAMMA (Alto procesamiento)'];
 
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
+        setInterval(() => {
+            // Genera frecuencias simuladas entre 4Hz y 40Hz
+            const mockHz = (Math.random() * (40 - 4) + 4).toFixed(2);
+            let currentWave = '';
 
-        const binary = "01";
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
-        const drops = [];
+            if (mockHz < 8) currentWave = waveTypes[2];      // Theta
+            else if (mockHz < 12) currentWave = waveTypes[0]; // Alfa
+            else if (mockHz < 30) currentWave = waveTypes[1]; // Beta
+            else currentWave = waveTypes[3];                 // Gamma
 
-        for(let x = 0; x < columns; x++) drops[x] = 1;
+            eegStreamText.innerHTML = `&gt; Telemetría detectada: <span class="cyan">${currentWave}</span>`;
+            telemetryData.innerHTML = `&gt; Frecuencia actual: <span class="cyan">${mockHz} Hz</span>`;
+        }, 1500);
 
-        function drawBinary() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#FFF";
-            ctx.font = fontSize + "px 'Share Tech Mono'";
+        // 2. Resaltar enlace activo en el menú al hacer scroll
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const wrapper = document.getElementById('scroll-container');
 
-            for(let i = 0; i < drops.length; i++) {
-                const text = binary.charAt(Math.floor(Math.random() * binary.length));
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
-        }
+        wrapper.addEventListener('scroll', () => {
+            let current = '';
+            const scrollPos = wrapper.scrollTop;
 
-        setInterval(drawBinary, 50);
-
-        // TERMINAL LOGIC
-        function initiateLockdown() {
-            const log = document.getElementById('console-log');
-            const messages = [
-                "> WARNING: LOCKDOWN COMMAND RECEIVED",
-                "> SHUTTING DOWN EXTERNAL PORTS...",
-                "> ENCRYPTING LOCAL DATA VOLUMES...",
-                "> SECURITY PERIMETER: SEALED.",
-                "> STATUS: OFFLINE."
-            ];
-            
-            messages.forEach((msg, i) => {
-                setTimeout(() => {
-                    log.innerHTML += `<br>${msg}`;
-                }, i * 600);
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                // Ajuste para detectar la sección un poco antes de que llegue arriba
+                if (scrollPos >= sectionTop - 200) {
+                    current = section.getAttribute('id');
+                }
             });
-        }
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>
